@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1673469429581,
+  "lastUpdate": 1673523260267,
   "repoUrl": "https://github.com/input-output-hk/cardano-ledger",
   "entries": {
     "Haskell Benchmark": [
@@ -24018,6 +24018,78 @@ window.BENCHMARK_DATA = {
             "value": 0.000017378485375818336,
             "unit": "Nanoseconds",
             "range": 0.0000010243777145040872
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "bart.frenk@gmail.com",
+            "name": "Bart Frenk",
+            "username": "bartfrenk"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "24d7a68b00c2e71c4ba9491bacb6be1970015602",
+          "message": "Add translation context to translate from Byron to Shelley (#3164)\n\nSet TranslationContext for ShelleyEra to enable translation from Byron:\r\n\r\n* Update CHANGELOG\r\n\r\n* Add import list to Cardano.Ledger.Shelley.Translation\r\n\r\nCo-authored-by: Alexey Kuleshevich <alexey.kuleshevich@iohk.io>",
+          "timestamp": "2023-01-12T14:24:07+03:00",
+          "tree_id": "f0fb4923ddcde785f0e4f3f97dcf3ba526680e1b",
+          "url": "https://github.com/input-output-hk/cardano-ledger/commit/24d7a68b00c2e71c4ba9491bacb6be1970015602"
+        },
+        "date": 1673523255802,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/ShelleyEra C_Crypto",
+            "value": 0.00006681965289017515,
+            "unit": "Nanoseconds",
+            "range": 1.594356695989549e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AllegraEra C_Crypto",
+            "value": 0.0000661853529072104,
+            "unit": "Nanoseconds",
+            "range": 9.059897489302536e-8
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/MaryEra C_Crypto",
+            "value": 0.00007745453839097807,
+            "unit": "Nanoseconds",
+            "range": 1.1409314305228172e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AlonzoEra C_Crypto",
+            "value": 0.000105862381723323,
+            "unit": "Nanoseconds",
+            "range": 1.084229974575881e-7
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/ShelleyEra C_Crypto",
+            "value": 0.00001861178781667129,
+            "unit": "Nanoseconds",
+            "range": 7.113477631721309e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AllegraEra C_Crypto",
+            "value": 0.00003281788818622525,
+            "unit": "Nanoseconds",
+            "range": 3.659063172511274e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/MaryEra C_Crypto",
+            "value": 0.000033551411868271304,
+            "unit": "Nanoseconds",
+            "range": 4.129710056900545e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AlonzoEra C_Crypto",
+            "value": 0.000015183953355996942,
+            "unit": "Nanoseconds",
+            "range": 7.538434153104385e-8
           }
         ]
       }
