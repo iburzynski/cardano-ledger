@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1674001300587,
+  "lastUpdate": 1674060995680,
   "repoUrl": "https://github.com/input-output-hk/cardano-ledger",
   "entries": {
     "Haskell Benchmark": [
@@ -24450,6 +24450,78 @@ window.BENCHMARK_DATA = {
             "value": 0.00001503506522230484,
             "unit": "Nanoseconds",
             "range": 8.64397858731001e-8
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "aniket.deshpande@iohk.io",
+            "name": "Aniket Deshpande",
+            "username": "aniketd"
+          },
+          "committer": {
+            "email": "aniketd@users.noreply.github.com",
+            "name": "Aniket Deshpande",
+            "username": "aniketd"
+          },
+          "distinct": true,
+          "id": "38aa337834ccb9b5f47dbf9e81a3b986dcdd57f5",
+          "message": "Rename Wdrls as Withdrawals. Move to Core.\n\nAlso,\nAdd Wdrl deprecation.\nRename generic field as withdrawals'.",
+          "timestamp": "2023-01-18T22:17:23+05:30",
+          "tree_id": "4bb5d4fb99f86c4892e52648ce5b6d486650bdb8",
+          "url": "https://github.com/input-output-hk/cardano-ledger/commit/38aa337834ccb9b5f47dbf9e81a3b986dcdd57f5"
+        },
+        "date": 1674060991547,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/ShelleyEra C_Crypto",
+            "value": 0.0000683207676032246,
+            "unit": "Nanoseconds",
+            "range": 9.485473914642271e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AllegraEra C_Crypto",
+            "value": 0.0000713087917725726,
+            "unit": "Nanoseconds",
+            "range": 9.303970329955655e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/MaryEra C_Crypto",
+            "value": 0.0000817462283855149,
+            "unit": "Nanoseconds",
+            "range": 1.7636705197528756e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AlonzoEra C_Crypto",
+            "value": 0.00011044429942601453,
+            "unit": "Nanoseconds",
+            "range": 0.000002099215245064063
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/ShelleyEra C_Crypto",
+            "value": 0.000018875962045728788,
+            "unit": "Nanoseconds",
+            "range": 2.1025795094922245e-7
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AllegraEra C_Crypto",
+            "value": 0.000031027291633992664,
+            "unit": "Nanoseconds",
+            "range": 6.813581900507709e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/MaryEra C_Crypto",
+            "value": 0.000031588333426667207,
+            "unit": "Nanoseconds",
+            "range": 1.1304434512092152e-7
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AlonzoEra C_Crypto",
+            "value": 0.000017070544818997884,
+            "unit": "Nanoseconds",
+            "range": 2.144480504129096e-7
           }
         ]
       }
