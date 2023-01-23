@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1674060995680,
+  "lastUpdate": 1674493376052,
   "repoUrl": "https://github.com/input-output-hk/cardano-ledger",
   "entries": {
     "Haskell Benchmark": [
@@ -24522,6 +24522,78 @@ window.BENCHMARK_DATA = {
             "value": 0.000017070544818997884,
             "unit": "Nanoseconds",
             "range": 2.144480504129096e-7
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "joosep.jaager@iohk.io",
+            "name": "Joosep Jääger",
+            "username": "Soupstraw"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "551eaabfdb07ad1c1523358177578b4103ce7f52",
+          "message": "Added new rules to Conway (#3216)\n\nMade `PPUPState` and `PPUPPredFailure` into type families so that we can\r\nswitch out the concrete instances in Conway and future eras.\r\n\r\nAdded `EraTallyState` type family so that we don't have to make\r\n`LedgerState` into a type family and we can just set the tally state to\r\na unit in pre-Conway eras.",
+          "timestamp": "2023-01-23T16:53:34Z",
+          "tree_id": "b84ce284b1a8ef6ad0a0f72ce2347d8b8fb1ded4",
+          "url": "https://github.com/input-output-hk/cardano-ledger/commit/551eaabfdb07ad1c1523358177578b4103ce7f52"
+        },
+        "date": 1674493371396,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/ShelleyEra C_Crypto",
+            "value": 0.00006839953035665887,
+            "unit": "Nanoseconds",
+            "range": 0.0000022600999166571983
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AllegraEra C_Crypto",
+            "value": 0.00007049944134931766,
+            "unit": "Nanoseconds",
+            "range": 6.927505115114324e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/MaryEra C_Crypto",
+            "value": 0.00008274772764022611,
+            "unit": "Nanoseconds",
+            "range": 4.7384314783185517e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AlonzoEra C_Crypto",
+            "value": 0.00010252714996910459,
+            "unit": "Nanoseconds",
+            "range": 9.13114321208794e-7
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/ShelleyEra C_Crypto",
+            "value": 0.000018655260215421168,
+            "unit": "Nanoseconds",
+            "range": 3.166453252745413e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AllegraEra C_Crypto",
+            "value": 0.00003073100287292229,
+            "unit": "Nanoseconds",
+            "range": 1.323003373605051e-7
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/MaryEra C_Crypto",
+            "value": 0.00003158431706658553,
+            "unit": "Nanoseconds",
+            "range": 7.929726645390488e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AlonzoEra C_Crypto",
+            "value": 0.000016651341912727244,
+            "unit": "Nanoseconds",
+            "range": 1.950944514634286e-7
           }
         ]
       }
