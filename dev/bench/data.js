@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1674493376052,
+  "lastUpdate": 1674537727050,
   "repoUrl": "https://github.com/input-output-hk/cardano-ledger",
   "entries": {
     "Haskell Benchmark": [
@@ -24594,6 +24594,78 @@ window.BENCHMARK_DATA = {
             "value": 0.000016651341912727244,
             "unit": "Nanoseconds",
             "range": 1.950944514634286e-7
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "andrea.bedini@tweag.io",
+            "name": "Andrea Bedini",
+            "username": "andreabedini"
+          },
+          "committer": {
+            "email": "jaredcorduan@gmail.com",
+            "name": "Jared Corduan",
+            "username": "JaredCorduan"
+          },
+          "distinct": true,
+          "id": "597d40e68788fe7e0168b7f9e49fe9def2a3d901",
+          "message": "Fix index-state syntax in cabal.project\n\nindex-state stanza in cabal.project is \"last wins\", so \r\n```\r\nindex-state: 2022-12-24T00:00:00Z\r\nindex-state: cardano-haskell-packages 2022-11-02T15:34:17Z\r\n``` would set the index state of hackage to HEAD.\r\nThe correct syntax to set the index-state of both repositories is\r\n```\r\nindex-state:\r\n  , hackage.haskell.org 2022-12-24T00:00:00Z\r\n  , cardano-haskell-packages 2022-11-02T15:34:17Z\r\n```\r\nhaskell.nix has trouble parsing the index-state syntax with multiple repositories, so we repeat the index-state for Hackage. Cabal will ignore the first index-state stanza anyway.",
+          "timestamp": "2023-01-24T00:11:32-05:00",
+          "tree_id": "83306b630f14cf9d28c1f1ed747e59269f1c29b1",
+          "url": "https://github.com/input-output-hk/cardano-ledger/commit/597d40e68788fe7e0168b7f9e49fe9def2a3d901"
+        },
+        "date": 1674537722456,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/ShelleyEra C_Crypto",
+            "value": 0.0000720468433523177,
+            "unit": "Nanoseconds",
+            "range": 3.0306667729057104e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AllegraEra C_Crypto",
+            "value": 0.00007306189238835996,
+            "unit": "Nanoseconds",
+            "range": 8.180240926848401e-8
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/MaryEra C_Crypto",
+            "value": 0.00008375877483522992,
+            "unit": "Nanoseconds",
+            "range": 1.555277424706433e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AlonzoEra C_Crypto",
+            "value": 0.00010823571439889166,
+            "unit": "Nanoseconds",
+            "range": 6.62451016327549e-7
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/ShelleyEra C_Crypto",
+            "value": 0.00001836759982664392,
+            "unit": "Nanoseconds",
+            "range": 4.834004300648669e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AllegraEra C_Crypto",
+            "value": 0.00003239972372384798,
+            "unit": "Nanoseconds",
+            "range": 6.965621573235182e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/MaryEra C_Crypto",
+            "value": 0.00003342419788533732,
+            "unit": "Nanoseconds",
+            "range": 2.1683998300483586e-7
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AlonzoEra C_Crypto",
+            "value": 0.00001479780998845418,
+            "unit": "Nanoseconds",
+            "range": 1.239703614181631e-7
           }
         ]
       }
