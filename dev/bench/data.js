@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1675956220069,
+  "lastUpdate": 1675980651503,
   "repoUrl": "https://github.com/input-output-hk/cardano-ledger",
   "entries": {
     "Haskell Benchmark": [
@@ -25314,6 +25314,78 @@ window.BENCHMARK_DATA = {
             "value": 0.000016234042132280806,
             "unit": "Nanoseconds",
             "range": 8.715420864904297e-8
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "jared.corduan@iohk.io",
+            "name": "Jared Corduan",
+            "username": "JaredCorduan"
+          },
+          "committer": {
+            "email": "jaredcorduan@gmail.com",
+            "name": "Jared Corduan",
+            "username": "JaredCorduan"
+          },
+          "distinct": true,
+          "id": "d85a46a63f7b31525642f0a25ad66a15cbf3c6a1",
+          "message": "copyright dates in NOTICE\n\nOur legal department instructed us to use this in the NOTICE:\n  copyright: 2018-2023 Input Output Global Inc (IOG)\n\nI also deleted the LICENSE file in TPraos package, since no other\npackage uses a standalone LICENSE.",
+          "timestamp": "2023-02-09T17:02:30-05:00",
+          "tree_id": "add5831f7b0c856d1b83abe9e5a00183510d29b4",
+          "url": "https://github.com/input-output-hk/cardano-ledger/commit/d85a46a63f7b31525642f0a25ad66a15cbf3c6a1"
+        },
+        "date": 1675980647708,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/ShelleyEra C_Crypto",
+            "value": 0.00007062041813227523,
+            "unit": "Nanoseconds",
+            "range": 0.000010939445347426444
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AllegraEra C_Crypto",
+            "value": 0.00007129752754434571,
+            "unit": "Nanoseconds",
+            "range": 1.4110077182483103e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/MaryEra C_Crypto",
+            "value": 0.00008349991016561775,
+            "unit": "Nanoseconds",
+            "range": 1.5257579970013598e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AlonzoEra C_Crypto",
+            "value": 0.00010623680910916423,
+            "unit": "Nanoseconds",
+            "range": 4.1936395783163084e-7
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/ShelleyEra C_Crypto",
+            "value": 0.000018493843778488815,
+            "unit": "Nanoseconds",
+            "range": 9.935088480042269e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AllegraEra C_Crypto",
+            "value": 0.00003043654040254812,
+            "unit": "Nanoseconds",
+            "range": 4.837394441663682e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/MaryEra C_Crypto",
+            "value": 0.0000311335393681403,
+            "unit": "Nanoseconds",
+            "range": 3.741400659787167e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AlonzoEra C_Crypto",
+            "value": 0.000016239186478653894,
+            "unit": "Nanoseconds",
+            "range": 4.116195209152213e-8
           }
         ]
       }
