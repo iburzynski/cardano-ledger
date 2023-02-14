@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1676041129302,
+  "lastUpdate": 1676405841641,
   "repoUrl": "https://github.com/input-output-hk/cardano-ledger",
   "entries": {
     "Haskell Benchmark": [
@@ -25530,6 +25530,78 @@ window.BENCHMARK_DATA = {
             "value": 0.000015632254994284848,
             "unit": "Nanoseconds",
             "range": 4.5004688517543846e-8
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "aniketd@users.noreply.github.com",
+            "name": "Aniket Deshpande",
+            "username": "aniketd"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b3ac4353f4a607094559e803a16ebd30e4ebfe7b",
+          "message": "Disallow decoding a 0-value MultiAsset (#3241)\n\n* Disallow 0-valued MultiAssets\r\n\r\n* Scale down test-data generators\r\n\r\n* Fix generators and tests\r\n\r\n* Update eras/shelley-ma/test-suite/src/Test/Cardano/Ledger/ShelleyMA/Serialisation/Generators.hs\r\n\r\nCo-authored-by: Alexey Kuleshevich <alexey.kuleshevich@iohk.io>\r\n\r\n* Fix refactoring\r\n\r\n---------\r\n\r\nCo-authored-by: Alexey Kuleshevich <alexey.kuleshevich@iohk.io>",
+          "timestamp": "2023-02-14T20:09:18Z",
+          "tree_id": "4d353ba5eaf0babe862815f2c721fe50b08ac69e",
+          "url": "https://github.com/input-output-hk/cardano-ledger/commit/b3ac4353f4a607094559e803a16ebd30e4ebfe7b"
+        },
+        "date": 1676405836877,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/ShelleyEra C_Crypto",
+            "value": 0.0000732863146365695,
+            "unit": "Nanoseconds",
+            "range": 0.000001604873575623117
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AllegraEra C_Crypto",
+            "value": 0.00007504567947947983,
+            "unit": "Nanoseconds",
+            "range": 9.575835185372057e-8
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/MaryEra C_Crypto",
+            "value": 0.00008606707073521341,
+            "unit": "Nanoseconds",
+            "range": 9.747893849285768e-8
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AlonzoEra C_Crypto",
+            "value": 0.00011359980191866347,
+            "unit": "Nanoseconds",
+            "range": 1.7693765800720502e-7
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/ShelleyEra C_Crypto",
+            "value": 0.00001816185129935101,
+            "unit": "Nanoseconds",
+            "range": 3.268873002577506e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AllegraEra C_Crypto",
+            "value": 0.00003207320341860794,
+            "unit": "Nanoseconds",
+            "range": 2.8202317174808673e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/MaryEra C_Crypto",
+            "value": 0.00003376747779972602,
+            "unit": "Nanoseconds",
+            "range": 3.901880255077955e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AlonzoEra C_Crypto",
+            "value": 0.000016169510122103803,
+            "unit": "Nanoseconds",
+            "range": 4.618111336516401e-8
           }
         ]
       }
