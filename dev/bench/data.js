@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1678853214868,
+  "lastUpdate": 1678918777302,
   "repoUrl": "https://github.com/input-output-hk/cardano-ledger",
   "entries": {
     "Haskell Benchmark": [
@@ -27114,6 +27114,78 @@ window.BENCHMARK_DATA = {
             "value": 0.000018831455752129578,
             "unit": "Nanoseconds",
             "range": 3.307750879204329e-7
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "alexey.kuleshevich@iohk.io",
+            "name": "Alexey Kuleshevich",
+            "username": "lehins"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "edbb00e537387e375860778f592395d27b3925b9",
+          "message": "Merge pull request #3332 from input-output-hk/lehins/embed-trip-failure\n\nImprove roundtrip CBOR serialization failure testing functions:",
+          "timestamp": "2023-03-16T01:15:07+03:00",
+          "tree_id": "31b3b53153d9b255afa62a6371d8d25e9c4e0f6d",
+          "url": "https://github.com/input-output-hk/cardano-ledger/commit/edbb00e537387e375860778f592395d27b3925b9"
+        },
+        "date": 1678918772093,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/ShelleyEra C_Crypto",
+            "value": 0.00007802115096861774,
+            "unit": "Nanoseconds",
+            "range": 0.0000014016589631972951
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AllegraEra C_Crypto",
+            "value": 0.00007799228821265544,
+            "unit": "Nanoseconds",
+            "range": 5.929418946351985e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/MaryEra C_Crypto",
+            "value": 0.00009094397203204727,
+            "unit": "Nanoseconds",
+            "range": 7.45371388026173e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AlonzoEra C_Crypto",
+            "value": 0.00012387907366121588,
+            "unit": "Nanoseconds",
+            "range": 0.0000011378579045603465
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/ShelleyEra C_Crypto",
+            "value": 0.000017932262119407638,
+            "unit": "Nanoseconds",
+            "range": 1.0514728517018838e-7
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AllegraEra C_Crypto",
+            "value": 0.000031285235358107375,
+            "unit": "Nanoseconds",
+            "range": 3.367865112062404e-7
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/MaryEra C_Crypto",
+            "value": 0.000032978109490546256,
+            "unit": "Nanoseconds",
+            "range": 8.746650471253797e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AlonzoEra C_Crypto",
+            "value": 0.000015833757227975956,
+            "unit": "Nanoseconds",
+            "range": 1.7858569500682924e-7
           }
         ]
       }
