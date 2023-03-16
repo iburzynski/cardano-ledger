@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1678995014374,
+  "lastUpdate": 1679004303671,
   "repoUrl": "https://github.com/input-output-hk/cardano-ledger",
   "entries": {
     "Haskell Benchmark": [
@@ -27402,6 +27402,78 @@ window.BENCHMARK_DATA = {
             "value": 0.000016673482560015314,
             "unit": "Nanoseconds",
             "range": 6.143113674492209e-8
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "jared.corduan@iohk.io",
+            "name": "Jared Corduan",
+            "username": "JaredCorduan"
+          },
+          "committer": {
+            "email": "jaredcorduan@gmail.com",
+            "name": "Jared Corduan",
+            "username": "JaredCorduan"
+          },
+          "distinct": true,
+          "id": "a342b74f5db3d3a75eae3e2abe358a169701b1e7",
+          "message": "enforce unique elements in CBOR sets, ver. 9\n\nStarting in major version 9, we now raise a decoding error if a CBOR\nset contains duplicate keys. Additionally, we allow (but do not require)\nthe set tag.",
+          "timestamp": "2023-03-16T18:01:09-04:00",
+          "tree_id": "e24071f47f1bdfa0d5fe2a73c7bd906696170839",
+          "url": "https://github.com/input-output-hk/cardano-ledger/commit/a342b74f5db3d3a75eae3e2abe358a169701b1e7"
+        },
+        "date": 1679004299726,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/ShelleyEra C_Crypto",
+            "value": 0.00007174632911629284,
+            "unit": "Nanoseconds",
+            "range": 1.0146153789644132e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AllegraEra C_Crypto",
+            "value": 0.00007347458240542854,
+            "unit": "Nanoseconds",
+            "range": 1.1998744028090356e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/MaryEra C_Crypto",
+            "value": 0.00008885248577456696,
+            "unit": "Nanoseconds",
+            "range": 1.785020865184219e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AlonzoEra C_Crypto",
+            "value": 0.00011687488802576766,
+            "unit": "Nanoseconds",
+            "range": 2.8841505068066215e-7
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/ShelleyEra C_Crypto",
+            "value": 0.00001751799965798473,
+            "unit": "Nanoseconds",
+            "range": 3.688500017758137e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AllegraEra C_Crypto",
+            "value": 0.000029500711726464547,
+            "unit": "Nanoseconds",
+            "range": 3.882810975328396e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/MaryEra C_Crypto",
+            "value": 0.0000306320976353008,
+            "unit": "Nanoseconds",
+            "range": 5.144418639789885e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AlonzoEra C_Crypto",
+            "value": 0.000015560764114448073,
+            "unit": "Nanoseconds",
+            "range": 4.449207703748937e-8
           }
         ]
       }
