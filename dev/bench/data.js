@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1679577372296,
+  "lastUpdate": 1679615438349,
   "repoUrl": "https://github.com/input-output-hk/cardano-ledger",
   "entries": {
     "Haskell Benchmark": [
@@ -28050,6 +28050,78 @@ window.BENCHMARK_DATA = {
             "value": 0.000015498293096449976,
             "unit": "Nanoseconds",
             "range": 3.926509563519479e-8
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "andre.knispel@iohk.io",
+            "name": "whatisRT",
+            "username": "WhatisRT"
+          },
+          "committer": {
+            "email": "jaredcorduan@gmail.com",
+            "name": "Jared Corduan",
+            "username": "JaredCorduan"
+          },
+          "distinct": true,
+          "id": "a116b2c1f69751c6955f8407351c5f806a57b0d5",
+          "message": "Fix some issues pointed out in the Babbage audit\n\nIn particular, I've removed the rounding from checking the balancing\nof the collateral since if n is a natural number and x is a\nrational (or real) number, n >= x is equivalent to n >= ceil x.\nWithout the rounding it's way more obvious that you can just multiply\nthe equation by 100 without changing the semantics.",
+          "timestamp": "2023-03-23T19:46:41-04:00",
+          "tree_id": "cad6f7cc2b961deb86dc20856fb65ebcbafc09a6",
+          "url": "https://github.com/input-output-hk/cardano-ledger/commit/a116b2c1f69751c6955f8407351c5f806a57b0d5"
+        },
+        "date": 1679615434573,
+        "tool": "customSmallerIsBetter",
+        "benches": [
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/ShelleyEra C_Crypto",
+            "value": 0.00007136941698822711,
+            "unit": "Nanoseconds",
+            "range": 4.879263696095522e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AllegraEra C_Crypto",
+            "value": 0.0000743574261446593,
+            "unit": "Nanoseconds",
+            "range": 6.104635312885388e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/MaryEra C_Crypto",
+            "value": 0.00008893528904701426,
+            "unit": "Nanoseconds",
+            "range": 1.8577345689825265e-7
+          },
+          {
+            "name": "applyTxBenchmarks/ApplyTxInEra/AlonzoEra C_Crypto",
+            "value": 0.00011948496563009151,
+            "unit": "Nanoseconds",
+            "range": 2.5941148679885033e-7
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/ShelleyEra C_Crypto",
+            "value": 0.000017904236584723004,
+            "unit": "Nanoseconds",
+            "range": 4.5704107767784235e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AllegraEra C_Crypto",
+            "value": 0.000029812019657706945,
+            "unit": "Nanoseconds",
+            "range": 6.714586355179688e-8
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/MaryEra C_Crypto",
+            "value": 0.000031112184510784726,
+            "unit": "Nanoseconds",
+            "range": 1.7001301877104892e-7
+          },
+          {
+            "name": "applyTxBenchmarks/Deserialise Shelley Tx/AlonzoEra C_Crypto",
+            "value": 0.000016288195624693074,
+            "unit": "Nanoseconds",
+            "range": 6.270525566979768e-7
           }
         ]
       }
