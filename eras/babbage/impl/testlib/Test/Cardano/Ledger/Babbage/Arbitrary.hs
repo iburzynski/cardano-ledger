@@ -18,13 +18,18 @@ import Cardano.Ledger.Babbage.Tx
 import Cardano.Ledger.Babbage.TxBody (BabbageTxOut (..))
 import Cardano.Ledger.BaseTypes (StrictMaybe)
 import Cardano.Ledger.Binary (Sized)
+import Cardano.Ledger.Crypto (Crypto)
+import Cardano.Ledger.Language (Language (..))
 import Control.State.Transition (STS (PredicateFailure))
 import Data.Functor.Identity (Identity)
-import Test.Cardano.Ledger.Alonzo.Arbitrary ()
+import Test.Cardano.Ledger.Alonzo.Arbitrary (genAlonzoScript)
 import Test.Cardano.Ledger.Mary.Arbitrary (genMintValues)
 import Test.QuickCheck
 
 deriving instance Arbitrary CoinPerByte
+
+instance forall c. Crypto c => Arbitrary (AlonzoScript (BabbageEra c)) where
+  arbitrary = genAlonzoScript [PlutusV1, PlutusV2]
 
 instance Arbitrary (BabbagePParams Identity era) where
   arbitrary =

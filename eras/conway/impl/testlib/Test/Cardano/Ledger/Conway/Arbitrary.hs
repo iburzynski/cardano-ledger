@@ -1,6 +1,8 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
@@ -8,7 +10,9 @@
 
 module Test.Cardano.Ledger.Conway.Arbitrary () where
 
+import Cardano.Ledger.Alonzo.Scripts (AlonzoScript)
 import Cardano.Ledger.Binary (Sized)
+import Cardano.Ledger.Conway
 import Cardano.Ledger.Conway.Core
 import Cardano.Ledger.Conway.Delegation.Certificates
 import Cardano.Ledger.Conway.Genesis (ConwayGenesis (..))
@@ -16,8 +20,9 @@ import Cardano.Ledger.Conway.Governance
 import Cardano.Ledger.Conway.Rules
 import Cardano.Ledger.Conway.TxBody
 import Cardano.Ledger.Crypto (Crypto)
+import Cardano.Ledger.Language (Language (..))
 import Control.State.Transition.Extended (STS (Event))
-import Test.Cardano.Ledger.Alonzo.Arbitrary ()
+import Test.Cardano.Ledger.Alonzo.Arbitrary (genAlonzoScript)
 import Test.Cardano.Ledger.Babbage.Arbitrary ()
 import Test.Cardano.Ledger.Common
 import Test.Cardano.Ledger.Mary.Arbitrary (genMintValues)
@@ -32,6 +37,9 @@ instance Crypto c => Arbitrary (ConwayDCert c) where
       , ConwayDCertPool <$> arbitrary
       , ConwayDCertConstitutional <$> arbitrary
       ]
+
+instance forall c. Crypto c => Arbitrary (AlonzoScript (ConwayEra c)) where
+  arbitrary = genAlonzoScript [PlutusV1, PlutusV2, PlutusV3]
 
 ------------------------------------------------------------------------------------------
 -- Cardano.Ledger.Conway.Governance ------------------------------------------------------

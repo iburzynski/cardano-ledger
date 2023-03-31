@@ -15,6 +15,7 @@
 * Add new encoder `encodeRatioNoTag` for `Ratio`
 * Changed: Starting in version 9, duplicate keys in CBOR sets are not longer allowed.
   Additionally, the CBOR set tag 258 is permitted but not enforced.
+* Add `unlessDecoderVersionAtLeast` and `guardUntilAtLeast`
 
 ### `testlib`
 

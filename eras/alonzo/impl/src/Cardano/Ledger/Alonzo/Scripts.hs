@@ -55,7 +55,7 @@ where
 
 import Cardano.Ledger.Allegra.Scripts (Timelock, eqTimelockRaw)
 import Cardano.Ledger.Alonzo.Era (AlonzoEra)
-import Cardano.Ledger.Alonzo.Language (Language (..))
+import Cardano.Ledger.Alonzo.Language (Language (..), nonNativeLanguages)
 import Cardano.Ledger.BaseTypes (
   BoundedRational (unboundRational),
   NonNegativeInterval,
@@ -79,9 +79,10 @@ import Cardano.Ledger.Binary (
 import Cardano.Ledger.Binary.Coders (
   Decode (Ann, D, From, Invalid, RecD, SumD, Summands),
   Encode (Rec, Sum, To),
-  Wrapped (Open),
+  Wrapped (..),
   decode,
   encode,
+  guardUntilAtLeast,
   (!>),
   (<!),
   (<*!),
@@ -138,6 +139,7 @@ import qualified PlutusLedgerApi.V1 as PV1 (
   mkEvaluationContext,
  )
 import qualified PlutusLedgerApi.V2 as PV2 (ParamName, assertScriptWellFormed, mkEvaluationContext)
+import qualified PlutusLedgerApi.V3 as PV3 (ParamName, assertScriptWellFormed, mkEvaluationContext)
 
 -- | Marker indicating the part of a transaction for which this script is acting
 -- as a validator.
@@ -202,6 +204,7 @@ instance Crypto c => EraScript (AlonzoEra c) where
       TimelockScript _ -> nativeMultiSigTag -- "\x00"
       PlutusScript PlutusV1 _ -> "\x01"
       PlutusScript PlutusV2 _ -> "\x02"
+      PlutusScript PlutusV3 _ -> "\x03"
 
 instance Era era => ToJSON (AlonzoScript era) where
   toJSON = String . serializeAsHexText
@@ -329,7 +332,7 @@ instance NFData CostModel where
 
 instance FromJSON CostModels where
   parseJSON = withObject "CostModels" $ \o -> do
-    cms <- mapM (parseCostModels o) [PlutusV1 .. PlutusV2]
+    cms <- mapM (parseCostModels o) nonNativeLanguages
     let cmsMap = Map.fromList [(cmLanguage cm, cm) | Just cm <- cms]
     pure $ CostModels cmsMap mempty mempty
 
@@ -364,9 +367,8 @@ costModelToMap cm =
   Map.fromList $ zip (costModelParamNames (cmLanguage cm)) (cmValues cm)
 
 costModelParamNames :: Language -> [Text]
-costModelParamNames = \case
-  PlutusV1 -> plutusV1ParamNames
-  PlutusV2 -> plutusV2ParamNames
+costModelParamNames PlutusV1 = plutusV1ParamNames
+costModelParamNames lang = plutusVXParamNames lang
 
 -- | There is a difference in 6 parameter names between the ones appearing alonzo genesis
 -- files and the values returned by plutus via `showParamName` on the `ParamName` enum.
@@ -376,7 +378,7 @@ plutusV1ParamNames :: [Text]
 plutusV1ParamNames =
   map (\newName -> Map.findWithDefault newName newName oldNewMapping) newNames
   where
-    newNames = T.pack . Plutus.showParamName <$> [minBound .. maxBound :: PV1.ParamName]
+    newNames = plutusVXParamNames PlutusV1
     oldNewMapping =
       Map.fromList
         [ ("blake2b_256-cpu-arguments-intercept", "blake2b-cpu-arguments-intercept")
@@ -387,8 +389,10 @@ plutusV1ParamNames =
         , ("verifyEd25519Signature-memory-arguments", "verifySignature-memory-arguments")
         ]
 
-plutusV2ParamNames :: [Text]
-plutusV2ParamNames = T.pack . Plutus.showParamName <$> [minBound .. maxBound :: PV2.ParamName]
+plutusVXParamNames :: Language -> [Text]
+plutusVXParamNames PlutusV1 = T.pack . Plutus.showParamName <$> [minBound .. maxBound :: PV1.ParamName]
+plutusVXParamNames PlutusV2 = T.pack . Plutus.showParamName <$> [minBound .. maxBound :: PV2.ParamName]
+plutusVXParamNames PlutusV3 = T.pack . Plutus.showParamName <$> [minBound .. maxBound :: PV3.ParamName]
 
 validateCostModel :: MonadFail m => Language -> [Integer] -> m CostModel
 validateCostModel lang cmps =
@@ -408,6 +412,7 @@ mkCostModel lang cm =
       case lang of
         PlutusV1 -> PV1.mkEvaluationContext
         PlutusV2 -> PV2.mkEvaluationContext
+        PlutusV3 -> PV3.mkEvaluationContext
     eCostModel :: Either PV1.CostModelApplyError (PV1.EvaluationContext, [CostModelApplyWarn])
     eCostModel = runWriterT (mkEvaluationContext cm)
 
@@ -446,6 +451,7 @@ decodeCostModels =
 legacyCostModelLength :: Language -> Int
 legacyCostModelLength PlutusV1 = 166
 legacyCostModelLength PlutusV2 = 175
+legacyCostModelLength PlutusV3 = 175
 
 -- | See the note for 'legacyCostModelLength'.
 legacyDecodeCostModel :: Language -> Decoder s CostModel
@@ -683,6 +689,7 @@ encodeScript (TimelockScript i) = Sum TimelockScript 0 !> To i
 -- Use the EncCBOR instance of ShortByteString:
 encodeScript (PlutusScript PlutusV1 s) = Sum (PlutusScript PlutusV1) 1 !> To s
 encodeScript (PlutusScript PlutusV2 s) = Sum (PlutusScript PlutusV2) 2 !> To s
+encodeScript (PlutusScript PlutusV3 s) = Sum (PlutusScript PlutusV3) 3 !> To s
 
 instance Era era => DecCBOR (Annotator (AlonzoScript era)) where
   decCBOR = decode (Summands "Alonzo Script" decodeScript)
@@ -691,7 +698,10 @@ instance Era era => DecCBOR (Annotator (AlonzoScript era)) where
       decodeScript 0 = Ann (SumD TimelockScript) <*! From
       decodeScript 1 = Ann (SumD $ PlutusScript PlutusV1) <*! Ann From
       decodeScript 2 = Ann (SumD $ PlutusScript PlutusV2) <*! Ann From
+      decodeScript 3 = Ann (SumD $ PlutusScript PlutusV3) <*! Ann decodeAtV9
       decodeScript n = Invalid n
+
+      decodeAtV9 = guardUntilAtLeast "PlutusV3 is not supported yet" (natVersion @9)
 
 -- | Test that every Alonzo script represents a real Script.
 --     Run deepseq to see that there are no infinite computations and that
@@ -705,6 +715,7 @@ validScript pv script =
             case lang of
               PlutusV1 -> PV1.assertScriptWellFormed
               PlutusV2 -> PV2.assertScriptWellFormed
+              PlutusV3 -> PV3.assertScriptWellFormed
           eWellFormed :: Either PV1.ScriptDecodeError ()
           eWellFormed = assertScriptWellFormed (transProtocolVersion pv) bytes
        in isRight eWellFormed

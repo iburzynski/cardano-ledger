@@ -19,6 +19,7 @@ import Data.Functor.Identity
 import Lens.Micro
 import Test.Cardano.Ledger.Babbage.Arbitrary ()
 import Test.Cardano.Ledger.Common
+import Test.Cardano.Ledger.Conway.Arbitrary ()
 
 propSetShelleyMinTxOut ::
   forall era.

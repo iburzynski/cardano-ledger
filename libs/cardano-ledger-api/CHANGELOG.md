@@ -37,6 +37,7 @@
   `evaluateTransactionExecutionUnits` and `evaluateTransactionExecutionUnitsWithLogs` if
   favor of the newly added ones.
 * Export `hashDataTxWitsL` and `hashScriptTxWitsL`
+* Add support for Plutus V3
 
 ## 1.0.0.0
 

@@ -6,6 +6,8 @@
 * Add `ToJSON` instance for `BabbagePParams Identity` and `BabbagePParams StrictMaybe`
 * Removed validation function `validateOutputTooBigUTxO`, in favor of the same function
   from `cardano-ledger-alonzo`.
+* Added support for Plutus V3 in the types and functions that use `Language`.
+  (Note that the Alonzo ledger era rules do not allow V3 scripts, however.).
 
 ###`testlib`
 

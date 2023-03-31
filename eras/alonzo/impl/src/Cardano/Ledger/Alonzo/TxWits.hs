@@ -68,6 +68,7 @@ import Cardano.Ledger.Binary (
   encodeListLen,
  )
 import Cardano.Ledger.Binary.Coders
+import Cardano.Ledger.Binary.Version (natVersion)
 import Cardano.Ledger.Core
 import Cardano.Ledger.Crypto (Crypto (DSIGN, HASH), StandardCrypto)
 import Cardano.Ledger.Keys (KeyRole (Witness))
@@ -451,7 +452,7 @@ instance (Era era, Script era ~ AlonzoScript era) => EncCBOR (AlonzoTxWitsRaw er
   encCBOR (AlonzoTxWitsRaw vkeys boots scripts dats rdmrs) =
     encode $
       Keyed
-        (\a b c d e f g -> AlonzoTxWitsRaw a b (c <> d <> e) f g)
+        (\a b c d e f g h -> AlonzoTxWitsRaw a b (c <> d <> e <> f) g h)
         !> Omit null (Key 0 $ To vkeys)
         !> Omit null (Key 2 $ To boots)
         !> Omit
@@ -475,6 +476,13 @@ instance (Era era, Script era ~ AlonzoScript era) => EncCBOR (AlonzoTxWitsRaw er
                 (encCBOR . mapMaybe unwrapPS2 . Map.elems)
                 (Map.filter (isPlutus PlutusV2) scripts)
           )
+        !> Omit
+          null
+          ( Key 7 $
+              E
+                (encCBOR . mapMaybe unwrapPS3 . Map.elems)
+                (Map.filter (isPlutus PlutusV3) scripts)
+          )
         !> Omit nullDats (Key 4 $ To dats)
         !> Omit nullRedeemers (Key 5 $ To rdmrs)
     where
@@ -484,6 +492,8 @@ instance (Era era, Script era ~ AlonzoScript era) => EncCBOR (AlonzoTxWitsRaw er
       unwrapPS1 _ = Nothing
       unwrapPS2 (PlutusScript PlutusV2 x) = Just x
       unwrapPS2 _ = Nothing
+      unwrapPS3 (PlutusScript PlutusV3 x) = Just x
+      unwrapPS3 _ = Nothing
 
       isTimelock (TimelockScript _) = True
       isTimelock (PlutusScript _ _) = False
@@ -561,7 +571,13 @@ instance
         fieldA
           addScripts
           (fmap (PlutusScript PlutusV2) <$> From)
+      txWitnessField 7 =
+        fieldA
+          addScripts
+          (fmap (PlutusScript PlutusV3) <$> decodeAtV9)
       txWitnessField n = field (\_ t -> t) (Invalid n)
+
+      decodeAtV9 = guardUntilAtLeast "PlutusV3 is not supported yet" (natVersion @9)
 
       addScripts :: [AlonzoScript era] -> AlonzoTxWitsRaw era -> AlonzoTxWitsRaw era
       addScripts x wits = wits {atwrScriptTxWits = getKeys ([] :: [era]) x <> atwrScriptTxWits wits}

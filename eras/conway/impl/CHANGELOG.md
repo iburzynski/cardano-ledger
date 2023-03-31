@@ -38,6 +38,9 @@
 * Add `ToCBOR`/`FromCBOR` for `ConwayGovernance`
 * Remove `cgAlonzoGenesis` from `ConwayGenesis`.
 * Set `ConwayGenesis` as `TranslationContext`
+* Change the Conway txInfo to allow Plutus V3
+  NOTE - unlike V1 and V2, the ledger will no longer place the "zero ada" value
+  in the script context for the transaction minting field.
 
 ### `testlib`
 

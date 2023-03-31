@@ -27,6 +27,7 @@
   [`FailT`](https://hackage.haskell.org/package/FailT) package
 * Move `bBodySize` into `Cardano.Ledger.Core`
 * Rename `TxId` field from `_unTxId` to `unTxId`
+* Add support for `PlutusV3`
 
 ### `testlib`
 
