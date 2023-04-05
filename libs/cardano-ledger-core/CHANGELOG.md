@@ -1,5 +1,18 @@
 # Version history for `cardano-ledger-core`
 
+## 1.2.0.0
+
+* Replace `DPState c` with `CertState era`
+* Add `VState`
+* Add `certVState`
+* Parametrize `DState` and `PState` by era
+* Rename `Cardano.Ledger.DPState` module to `Cardano.Ledger.CertState`
+* Rename:
+  * `lsDPState` -> `lsCertState`
+  * `dpsPState` -> `certPState`
+  * `dpsDState` -> `certDState`
+  * `obligationDPState` -> `obligationCertState`
+
 ## 1.1.0.0
 
 * Add `ToJSON (PParamsHKD f era)` superclass constraints for `EraPParams`.

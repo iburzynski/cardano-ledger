@@ -33,7 +33,7 @@ import Cardano.Ledger.BaseTypes (
  )
 import Cardano.Ledger.Block (Block (..), txid)
 import Cardano.Ledger.Coin (Coin (..))
-import Cardano.Ledger.Conway.Rules (ConwayLedgerPredFailure (..))
+import Cardano.Ledger.Conway.Rules (ConwayDelegsPredFailure (..), ConwayLedgerPredFailure (..))
 
 import Cardano.Ledger.Credential (
   Credential (..),
@@ -51,7 +51,7 @@ import Cardano.Ledger.Mary.Value (MaryValue (..), MultiAsset (..))
 import Cardano.Ledger.Pretty.Babbage ()
 import Cardano.Ledger.SafeHash (hashAnnotated)
 import Cardano.Ledger.Shelley.API (
-  DPState (..),
+  CertState (..),
   DState (..),
   LedgerState (..),
   PoolParams (..),
@@ -183,7 +183,7 @@ initialBBodyState pf utxo =
     initialUtxoSt = smartUTxOState (pp pf) utxo (UM.fromCompact successDeposit) (Coin 0) def
     dpstate =
       def
-        { dpsDState =
+        { certDState =
             def
               { dsUnified =
                   UM.insert
@@ -656,7 +656,7 @@ testBBodyState pf =
           ]
       poolID = hashKey . vKey . coerceKeyRole $ coldKeys
       example1UtxoSt = smartUTxOState (pp pf) utxo totalDeposits (Coin 40) def
-      -- the default DPState 'def' means that the 'totalDeposits' must be 0
+      -- the default CertState 'def' means that the 'totalDeposits' must be 0
       totalDeposits = (Coin 0)
    in BbodyState
         (LedgerState example1UtxoSt def)
@@ -672,7 +672,7 @@ makeTooBig proof@(Babbage _) =
   ShelleyInAlonzoBbodyPredFailure . LedgersFailure . LedgerFailure . DelegsFailure . DelplFailure . PoolFailure $
     PoolMedataHashTooBig (coerceKeyRole . hashKey . vKey $ someKeys proof) (hashsize @Mock + 1)
 makeTooBig proof@(Conway _) =
-  ShelleyInAlonzoBbodyPredFailure . LedgersFailure . LedgerFailure . ConwayDelegsFailure . DelplFailure . PoolFailure $
+  ShelleyInAlonzoBbodyPredFailure . LedgersFailure . LedgerFailure . ConwayDelegsFailure . CertFailure . PoolFailure $
     PoolMedataHashTooBig (coerceKeyRole . hashKey . vKey $ someKeys proof) (hashsize @Mock + 1)
 makeTooBig proof = error ("makeTooBig does not work in era " ++ show proof)
 

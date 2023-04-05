@@ -1,5 +1,14 @@
 # Version history for `cardano-ledger-babbage`
 
+## 1.2.0.0
+
+* Replace `DPState c` with `CertState era`
+* Parametrize `DState` and `PState` by era
+* Add `TranslateEra` instances for:
+  * `DState`
+  * `PState`
+  * `VState`
+
 ## 1.1.0.0
 
 * Add `ToJSON` instance for `BabbageTxOut`.

@@ -5,7 +5,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE PartialTypeSignatures #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
@@ -79,12 +78,49 @@ instance Crypto c => TranslateEra (MaryEra c) EpochState where
         , esNonMyopic = esNonMyopic es
         }
 
+instance Crypto c => TranslateEra (MaryEra c) DState where
+  translateEra _ ls =
+    pure
+      DState
+        { dsUnified = dsUnified ls
+        , dsIRewards = dsIRewards ls
+        , dsGenDelegs = dsGenDelegs ls
+        , dsFutureGenDelegs = dsFutureGenDelegs ls
+        }
+
+instance Crypto c => TranslateEra (MaryEra c) VState where
+  translateEra _ ls =
+    pure
+      VState
+        { vsDReps = vsDReps ls
+        , vsCCHotKeys = vsCCHotKeys ls
+        }
+
+instance Crypto c => TranslateEra (MaryEra c) PState where
+  translateEra _ ls =
+    pure
+      PState
+        { psStakePoolParams = psStakePoolParams ls
+        , psRetiring = psRetiring ls
+        , psFutureStakePoolParams = psFutureStakePoolParams ls
+        , psDeposits = psDeposits ls
+        }
+
+instance Crypto c => TranslateEra (MaryEra c) CertState where
+  translateEra ctxt ls =
+    pure
+      CertState
+        { certDState = translateEra' ctxt $ certDState ls
+        , certPState = translateEra' ctxt $ certPState ls
+        , certVState = translateEra' ctxt $ certVState ls
+        }
+
 instance Crypto c => TranslateEra (MaryEra c) LedgerState where
   translateEra ctxt ls =
     return
       LedgerState
         { lsUTxOState = translateEra' ctxt $ lsUTxOState ls
-        , lsDPState = lsDPState ls
+        , lsCertState = translateEra' ctxt $ lsCertState ls
         }
 
 instance Crypto c => TranslateEra (MaryEra c) ProposedPPUpdates where

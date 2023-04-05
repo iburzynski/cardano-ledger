@@ -2,7 +2,6 @@
 {-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
@@ -32,7 +31,7 @@ import Cardano.Ledger.Core
 import Cardano.Ledger.Shelley.API (ApplyBlock, ShelleyDELEG)
 import Cardano.Ledger.Shelley.Core
 import Cardano.Ledger.Shelley.LedgerState (
-  DPState (..),
+  CertState (..),
   EpochState (..),
   LedgerState (..),
   NewEpochState (..),
@@ -199,7 +198,7 @@ poolTraceFromBlock chainSt block =
       let (LedgerEnv s _ pp _) = ledgerEnv
        in PoolEnv s pp
     poolSt0 =
-      let LedgerState _ (DPState _ poolSt0_) = ledgerSt0
+      let LedgerState _ (CertState _ poolSt0_ _) = ledgerSt0
        in poolSt0_
     poolCert (DCertPool _) = True
     poolCert _ = False
@@ -230,7 +229,7 @@ delegTraceFromBlock chainSt block =
           ptr = Ptr s txIx dummyCertIx
        in DelegEnv s ptr reserves pp
     delegSt0 =
-      let LedgerState _ (DPState delegSt0_ _) = ledgerSt0
+      let LedgerState _ (CertState delegSt0_ _ _) = ledgerSt0
        in delegSt0_
     delegCert (DCertDeleg _) = True
     delegCert (DCertMir _) = True

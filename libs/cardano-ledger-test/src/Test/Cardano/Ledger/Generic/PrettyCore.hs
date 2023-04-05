@@ -33,6 +33,7 @@ import Cardano.Ledger.Alonzo.TxWits (Redeemers (..), TxDats (..), unTxDats)
 import Cardano.Ledger.AuxiliaryData (AuxiliaryDataHash (..))
 import Cardano.Ledger.Babbage.TxBody (BabbageTxOut (..))
 import Cardano.Ledger.BaseTypes (BlocksMade (..), Network (..), ProtVer (..), SlotNo (..), TxIx (..), txIxToInt)
+import qualified Cardano.Ledger.CertState as DP
 import Cardano.Ledger.Coin (Coin (..), DeltaCoin (..))
 import Cardano.Ledger.Conway.Delegation.Certificates (ConwayDCert (..))
 import Cardano.Ledger.Conway.Governance (ConwayTallyState (..))
@@ -42,7 +43,6 @@ import Cardano.Ledger.Core
 import qualified Cardano.Ledger.Core as Core
 import Cardano.Ledger.Credential (Credential (KeyHashObj, ScriptHashObj), StakeReference (..))
 import qualified Cardano.Ledger.Crypto as CC (Crypto)
-import qualified Cardano.Ledger.DPState as DP
 import Cardano.Ledger.EpochBoundary (SnapShot (..), SnapShots (..), Stake (..))
 import Cardano.Ledger.Keys (
   GenDelegPair (..),
@@ -65,7 +65,7 @@ import Cardano.Ledger.Shelley.AdaPots (AdaPots (..), totalAdaES, totalAdaPotsES)
 import Cardano.Ledger.Shelley.Core
 import Cardano.Ledger.Shelley.LedgerState (
   AccountState (..),
-  DPState (..),
+  CertState (..),
   DState (..),
   EpochState (..),
   FutureGenDeleg (..),
@@ -75,6 +75,7 @@ import Cardano.Ledger.Shelley.LedgerState (
   PPUPPredFailure,
   PState (..),
   UTxOState (..),
+  VState (..),
  )
 import Cardano.Ledger.Shelley.Rules as Shelley (
   ShelleyBbodyPredFailure (..),
@@ -1204,8 +1205,8 @@ pStateSummary (PState pp fpp retire deposit) =
     , ("Deposits", ppInt (Map.size deposit))
     ]
 
-dpStateSummary :: DPState c -> PDoc
-dpStateSummary (DPState d p) = vsep [dStateSummary d, pStateSummary p]
+dpStateSummary :: CertState era -> PDoc
+dpStateSummary (CertState d p v) = vsep [dStateSummary d, pStateSummary p, prettyA v]
 
 -- =============================================
 
@@ -1534,15 +1535,19 @@ instance
   where
   prettyC _ x = ppMap pcKeyHash pcGenDelegPair x
 
-instance c ~ EraCrypto era => PrettyC (PState c) era where
+instance PrettyC (PState era) era where
   prettyC _ x = pcPState x
 
-instance c ~ EraCrypto era => PrettyC (DPState c) era where
-  prettyC _ (DPState dst pst) =
+instance PrettyC (VState era) era where
+  prettyC _ st = prettyA st
+
+instance PrettyC (CertState era) era where
+  prettyC proof (CertState dst pst vst) =
     ppRecord
-      "DPState"
+      "CertState"
       [ ("dstate", pcDState dst)
       , ("pstate", pcPState pst)
+      , ("vstate", prettyC proof vst)
       ]
 
 instance Reflect era => PrettyC (LedgerState era) era where prettyC = pcLedgerState
@@ -1649,7 +1654,7 @@ pcLedgerState proof ls =
   ppRecord
     "LedgerState"
     [ ("utxoState", pcUTxOState proof (lsUTxOState ls))
-    , ("dpState", prettyC proof (lsDPState ls))
+    , ("dpState", prettyC proof (lsCertState ls))
     ]
 
 pcPState :: PState era -> PDoc

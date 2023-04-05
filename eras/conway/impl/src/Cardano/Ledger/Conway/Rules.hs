@@ -7,9 +7,11 @@ module Cardano.Ledger.Conway.Rules (
   module Cardano.Ledger.Conway.Rules.Ratify,
   module Cardano.Ledger.Conway.Rules.Tally,
   module Cardano.Ledger.Conway.Rules.Utxos,
+  module Cardano.Ledger.Conway.Rules.Delegs,
 )
 where
 
+import Cardano.Ledger.Conway.Rules.Delegs
 import Cardano.Ledger.Conway.Rules.Enact
 import Cardano.Ledger.Conway.Rules.Epoch
 import Cardano.Ledger.Conway.Rules.Ledger

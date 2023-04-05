@@ -1,3 +1,4 @@
+{-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
@@ -18,7 +19,9 @@ module Cardano.Ledger.Shelley.Rules.Delegs (
   DelegsEnv (..),
   ShelleyDelegsPredFailure (..),
   ShelleyDelegsEvent (..),
+  ShelleyDelegsFail (..),
   PredicateFailure,
+  delegsTransition,
 )
 where
 
@@ -40,11 +43,12 @@ import Cardano.Ledger.Coin (Coin)
 import Cardano.Ledger.Core
 import Cardano.Ledger.Credential (Credential)
 import Cardano.Ledger.Keys (KeyHash, KeyRole (..))
+import Cardano.Ledger.Rules.ValidationMode (Inject (..))
 import Cardano.Ledger.Shelley.Era (ShelleyDELEGS)
 import Cardano.Ledger.Shelley.LedgerState (
   AccountState,
-  DPState (..),
-  dpsDState,
+  CertState (..),
+  certDState,
   dsUnified,
   psStakePoolParams,
   rewards,
@@ -108,16 +112,27 @@ data ShelleyDelegsPredFailure era
   | DelplFailure (PredicateFailure (EraRule "DELPL" era)) -- Subtransition Failures
   deriving (Generic)
 
+class ShelleyDelegsFail certFailure a era where
+  delegateeNotRegisteredDELEG :: KeyHash 'StakePool (EraCrypto era) -> a
+  withdrawalsNotInRewardsDELEGS :: Map (RewardAcnt (EraCrypto era)) Coin -> a
+  certFailure :: certFailure -> a
+
+instance
+  certFailure ~ PredicateFailure (EraRule "DELPL" era) =>
+  ShelleyDelegsFail certFailure (ShelleyDelegsPredFailure era) era
+  where
+  delegateeNotRegisteredDELEG = DelegateeNotRegisteredDELEG
+  withdrawalsNotInRewardsDELEGS = WithdrawalsNotInRewardsDELEGS
+  certFailure = DelplFailure
+
 newtype ShelleyDelegsEvent era = DelplEvent (Event (EraRule "DELPL" era))
 
 deriving stock instance
-  ( Show (PredicateFailure (EraRule "DELPL" era))
-  ) =>
+  Show (PredicateFailure (EraRule "DELPL" era)) =>
   Show (ShelleyDelegsPredFailure era)
 
 deriving stock instance
-  ( Eq (PredicateFailure (EraRule "DELPL" era))
-  ) =>
+  Eq (PredicateFailure (EraRule "DELPL" era)) =>
   Eq (ShelleyDelegsPredFailure era)
 
 instance
@@ -129,12 +144,13 @@ instance
   , ShelleyEraTxBody era
   , Embed (EraRule "DELPL" era) (ShelleyDELEGS era)
   , Environment (EraRule "DELPL" era) ~ DelplEnv era
-  , State (EraRule "DELPL" era) ~ DPState (EraCrypto era)
+  , State (EraRule "DELPL" era) ~ CertState era
   , Signal (EraRule "DELPL" era) ~ DCert (EraCrypto era)
+  , PredicateFailure (EraRule "DELPL" era) ~ ShelleyDelplPredFailure era
   ) =>
   STS (ShelleyDELEGS era)
   where
-  type State (ShelleyDELEGS era) = DPState (EraCrypto era)
+  type State (ShelleyDELEGS era) = CertState era
   type Signal (ShelleyDELEGS era) = Seq (DCert (EraCrypto era))
   type Environment (ShelleyDELEGS era) = DelegsEnv era
   type BaseM (ShelleyDELEGS era) = ShelleyBase
@@ -143,11 +159,13 @@ instance
       ShelleyDelegsPredFailure era
   type Event (ShelleyDELEGS era) = ShelleyDelegsEvent era
 
-  transitionRules = [delegsTransition]
+  transitionRules = [delegsTransition @_ @(EraRule "DELPL" era) @(ShelleyDELEGS era) @(ShelleyDelplPredFailure era)]
+
+instance Inject (ShelleyDelegsPredFailure era) (ShelleyDelegsPredFailure era) where
+  inject = id
 
 instance
-  ( NoThunks (PredicateFailure (EraRule "DELPL" era))
-  ) =>
+  NoThunks (PredicateFailure (EraRule "DELPL" era)) =>
   NoThunks (ShelleyDelegsPredFailure era)
 
 instance
@@ -193,26 +211,31 @@ instance
         k -> invalidKey k
 
 delegsTransition ::
-  forall era.
+  forall era someCERT someDELEGS certFailure.
   ( EraTx era
-  , ShelleyEraTxBody era
-  , Embed (EraRule "DELPL" era) (ShelleyDELEGS era)
-  , Environment (EraRule "DELPL" era) ~ DelplEnv era
-  , State (EraRule "DELPL" era) ~ DPState (EraCrypto era)
-  , Signal (EraRule "DELPL" era) ~ DCert (EraCrypto era)
+  , Environment someCERT ~ DelplEnv era
+  , State someCERT ~ CertState era
+  , Signal someCERT ~ DCert (EraCrypto era)
+  , STS someDELEGS
+  , BaseM someDELEGS ~ ShelleyBase
+  , Signal someDELEGS ~ Seq (DCert (EraCrypto era))
+  , State someDELEGS ~ CertState era
+  , Environment someDELEGS ~ DelegsEnv era
+  , Embed someCERT someDELEGS
+  , ShelleyDelegsFail certFailure (PredicateFailure someDELEGS) era
   ) =>
-  TransitionRule (ShelleyDELEGS era)
+  TransitionRule someDELEGS
 delegsTransition = do
   TRC (env@(DelegsEnv slot txIx pp tx acnt), dpstate, certificates) <- judgmentContext
   network <- liftSTS $ asks networkId
 
   case certificates of
     Empty -> do
-      let ds = dpsDState dpstate
+      let ds = certDState dpstate
           withdrawals_ = unWithdrawals (tx ^. bodyTxL . withdrawalsTxBodyL)
           rewards' = rewards ds
       isSubmapOf withdrawals_ rewards' -- withdrawals_ ⊆ rewards
-        ?! WithdrawalsNotInRewardsDELEGS
+        ?! (withdrawalsNotInRewardsDELEGS @certFailure @_ @era)
           ( Map.differenceWith
               (\x y -> if x /= y then Just x else Nothing)
               withdrawals_
@@ -229,25 +252,25 @@ delegsTransition = do
               Map.empty
               withdrawals_
           unified' = rewards' UM.⨃ drainedRewardAccounts
-      pure $ dpstate {dpsDState = ds {dsUnified = unified'}}
+      pure $ dpstate {certDState = ds {dsUnified = unified'}}
     gamma :|> c -> do
       dpstate' <-
-        trans @(ShelleyDELEGS era) $ TRC (env, dpstate, gamma)
+        trans @someDELEGS $ TRC (env, dpstate, gamma)
 
       let isDelegationRegistered = case c of
             DCertDeleg (Delegate deleg) ->
-              let stPools_ = psStakePoolParams $ dpsPState dpstate'
+              let stPools_ = psStakePoolParams $ certPState dpstate'
                   targetPool = dDelegatee deleg
                in if eval (targetPool ∈ dom stPools_)
                     then Right ()
-                    else Left $ DelegateeNotRegisteredDELEG targetPool
+                    else Left $ delegateeNotRegisteredDELEG @certFailure @_ @era targetPool
             _ -> Right ()
       isDelegationRegistered ?!: id
 
       -- It is impossible to have 65535 number of certificates in a
       -- transaction, therefore partial function is justified.
       let ptr = Ptr slot txIx (mkCertIxPartial $ toInteger $ length gamma)
-      trans @(EraRule "DELPL" era) $
+      trans @someCERT $
         TRC (DelplEnv slot ptr pp acnt, dpstate', c)
   where
     -- @withdrawals_@ is small and @rewards@ big, better to transform the former

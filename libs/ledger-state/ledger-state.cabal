@@ -43,6 +43,7 @@ library
         cardano-ledger-shelley >=1.1,
         conduit,
         containers,
+        data-default-class,
         vector-map,
         deepseq,
         foldl,

@@ -34,10 +34,10 @@ import Cardano.Ledger.Shelley.LedgerState (
   esPp,
   esPrevPp,
   esSnapshots,
-  lsDPState,
+  lsCertState,
   lsUTxOState,
-  obligationDPState,
-  pattern DPState,
+  obligationCertState,
+  pattern CertState,
   pattern EpochState,
  )
 import Cardano.Ledger.Shelley.Rewards ()
@@ -120,9 +120,9 @@ epochTransition = do
       ) <-
     judgmentContext
   let utxoSt = lsUTxOState ls
-  let DPState dstate pstate = lsDPState ls
+  let CertState dstate pstate vstate = lsCertState ls
   ss' <-
-    trans @(EraRule "SNAP" era) $ TRC ((SnapEnv ls pp), ss, ())
+    trans @(EraRule "SNAP" era) $ TRC (SnapEnv ls pp, ss, ())
 
   let PState pParams fPParams _ _ = pstate
       ppp = eval (pParams ⨃ fPParams)
@@ -135,18 +135,18 @@ epochTransition = do
     trans @(EraRule "POOLREAP" era) $
       TRC (pp, PoolreapState utxoSt acnt dstate pstate', e)
 
-  let adjustedDPstate = DPState dstate' pstate''
+  let adjustedDPstate = CertState dstate' pstate'' vstate
       epochState' =
         EpochState
           acnt'
           ss'
-          (ls {lsUTxOState = utxoSt', lsDPState = adjustedDPstate})
+          (ls {lsUTxOState = utxoSt', lsCertState = adjustedDPstate})
           pr
           pp
           nm
 
   let
-    utxoSt''' = utxoSt' {utxosDeposited = obligationDPState adjustedDPstate}
+    utxoSt''' = utxoSt' {utxosDeposited = obligationCertState adjustedDPstate}
     acnt'' = acnt' {asReserves = asReserves acnt'}
   pure $
     epochState'
