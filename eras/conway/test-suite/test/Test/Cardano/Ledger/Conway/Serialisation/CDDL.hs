@@ -21,6 +21,8 @@ import Test.Cardano.Ledger.Shelley.Serialisation.CDDLUtils (
   cddlTest,
  )
 import Test.Tasty (TestTree, testGroup, withResource)
+import Cardano.Ledger.Conway.Delegation.Certificates (ConwayDCert)
+import Cardano.Ledger.Crypto (StandardCrypto)
 
 tests :: Int -> TestTree
 tests n = withResource combinedCDDL (const (pure ())) $ \cddl ->
@@ -40,6 +42,9 @@ tests n = withResource combinedCDDL (const (pure ())) $ \cddl ->
     , cddlAnnotatorTest @(Redeemers Conway) (eraProtVerHigh @Conway) n "[* redeemer]"
     , cddlAnnotatorTest @(Tx Conway) (eraProtVerHigh @Conway) n "transaction"
     , cddlTest @(GovernanceProcedure Conway) (eraProtVerHigh @Conway) n "governance_procedure"
+    , cddlTest @(VotingProcedure Conway) (eraProtVerHigh @Conway) n "voting_procedure"
+    , cddlTest @(ProposalProcedure Conway) (eraProtVerHigh @Conway) n "proposal_procedure"
+    , cddlTest @(ConwayDCert StandardCrypto) (eraProtVerHigh @Conway) n "certificate"
     ]
       <*> pure cddl
 

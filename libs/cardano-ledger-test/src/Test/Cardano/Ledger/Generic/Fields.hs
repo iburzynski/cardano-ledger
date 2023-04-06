@@ -62,6 +62,8 @@ import Cardano.Ledger.Coin (Coin (..))
 import Cardano.Ledger.Conway.Core
 import Cardano.Ledger.Conway.Delegation.Certificates (ConwayDCert, transDCert)
 import Cardano.Ledger.Conway.Rules (GovernanceProcedure)
+import Cardano.Ledger.Conway.Delegation.Certificates (ConwayDCert)
+import Cardano.Ledger.Conway.Governance (GovernanceProcedure (..))
 import Cardano.Ledger.Conway.TxBody (ConwayTxBody (..))
 import Cardano.Ledger.Credential (Credential (..), StakeReference (..))
 import Cardano.Ledger.Keys (KeyHash, KeyRole (..), hashKey)
