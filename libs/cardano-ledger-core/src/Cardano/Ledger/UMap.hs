@@ -17,7 +17,7 @@
 --   and a fourth one in the inverse direction.
 --   The advantage of using 'UMap' is that 'UMap' stores all the information compactly, by exploiting the
 --   the large amount of sharing in the 2 maps.
-module Cardano.Ledger.UMapCompact (
+module Cardano.Ledger.UMap (
   -- * Constructing 'UMap'
   -- $UMAP
   Trip (Triple),
@@ -80,6 +80,7 @@ module Cardano.Ledger.UMapCompact (
   size,
   unify,
   RDPair (..),
+  rdPairView,
 )
 where
 
@@ -362,6 +363,10 @@ compactRewView x = Map.map rdReward $ unUnify (RewardDeposits x)
 -- | Materialize the Deposit  Map from a 'UMap'
 depositView :: UMap c -> Map.Map (Credential 'Staking c) Coin
 depositView x = Map.map (fromCompact . rdDeposit) $ unUnify (RewardDeposits x)
+
+-- | Materialize the RDPairs Map from a 'UMap'
+rdPairView :: UMap c -> Map.Map (Credential 'Staking c) RDPair
+rdPairView x = unUnify (RewardDeposits x)
 
 -- | Materialize the Delegation Map from a 'UMap'
 delView :: UMap c -> Map.Map (Credential 'Staking c) (KeyHash 'StakePool c)

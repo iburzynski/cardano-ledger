@@ -2,6 +2,7 @@
 
 ## 1.1.0.0
 
+* Rename `UMapCompact` to `UMap` and add tests for it.
 * Add `ToJSON (PParamsHKD f era)` superclass constraints for `EraPParams`.
 * Add `ToJSON (TxOut era)` superclass constraints for `EraTxOut`.
 * Add superclass constraints for `Val`:
