@@ -131,7 +131,7 @@ genTx ::
   , Embed (EraRule "DELPL" era) (CERTS era)
   , Environment (EraRule "DELPL" era) ~ DelplEnv era
   , State (EraRule "DELPL" era) ~ DPState (EraCrypto era)
-  , Signal (EraRule "DELPL" era) ~ DCert (EraCrypto era)
+  , Signal (EraRule "DELPL" era) ~ DCert era
   ) =>
   GenEnv era ->
   LedgerEnv era ->

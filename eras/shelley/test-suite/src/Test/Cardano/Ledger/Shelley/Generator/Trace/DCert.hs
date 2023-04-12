@@ -98,13 +98,13 @@ instance
   , Embed (Core.EraRule "DELPL" era) (CERTS era)
   , Environment (Core.EraRule "DELPL" era) ~ DelplEnv era
   , State (Core.EraRule "DELPL" era) ~ DPState (EraCrypto era)
-  , Signal (Core.EraRule "DELPL" era) ~ DCert (EraCrypto era)
+  , Signal (Core.EraRule "DELPL" era) ~ DCert era
   ) =>
   STS (CERTS era)
   where
   type Environment (CERTS era) = (SlotNo, TxIx, Core.PParams era, AccountState)
   type State (CERTS era) = (DPState (EraCrypto era), CertIx)
-  type Signal (CERTS era) = Maybe (DCert (EraCrypto era), CertCred era)
+  type Signal (CERTS era) = Maybe (DCert era, CertCred era)
   type PredicateFailure (CERTS era) = CertsPredicateFailure era
   type Event (CERTS era) = CertsEvent era
 
@@ -118,7 +118,7 @@ certsTransition ::
   ( Embed (Core.EraRule "DELPL" era) (CERTS era)
   , Environment (Core.EraRule "DELPL" era) ~ DelplEnv era
   , State (Core.EraRule "DELPL" era) ~ DPState (EraCrypto era)
-  , Signal (Core.EraRule "DELPL" era) ~ DCert (EraCrypto era)
+  , Signal (Core.EraRule "DELPL" era) ~ DCert era
   ) =>
   TransitionRule (CERTS era)
 certsTransition = do
@@ -156,7 +156,7 @@ instance
   , Embed (Core.EraRule "DELPL" era) (CERTS era)
   , Environment (Core.EraRule "DELPL" era) ~ DelplEnv era
   , State (Core.EraRule "DELPL" era) ~ DPState (EraCrypto era)
-  , Signal (Core.EraRule "DELPL" era) ~ DCert (EraCrypto era)
+  , Signal (Core.EraRule "DELPL" era) ~ DCert era
   ) =>
   QC.HasTrace (CERTS era) (GenEnv era)
   where
@@ -191,7 +191,7 @@ genDCerts ::
   , Embed (Core.EraRule "DELPL" era) (CERTS era)
   , Environment (Core.EraRule "DELPL" era) ~ DelplEnv era
   , State (Core.EraRule "DELPL" era) ~ DPState (EraCrypto era)
-  , Signal (Core.EraRule "DELPL" era) ~ DCert (EraCrypto era)
+  , Signal (Core.EraRule "DELPL" era) ~ DCert era
   ) =>
   GenEnv era ->
   Core.PParams era ->
@@ -200,7 +200,7 @@ genDCerts ::
   TxIx ->
   AccountState ->
   Gen
-    ( StrictSeq (DCert (EraCrypto era))
+    ( StrictSeq (DCert era)
     , Coin
     , Coin
     , DPState (EraCrypto era)

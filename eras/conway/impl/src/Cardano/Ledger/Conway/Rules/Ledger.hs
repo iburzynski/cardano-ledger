@@ -40,7 +40,6 @@ import Cardano.Ledger.Conway.Rules.Tally (
  )
 import Cardano.Ledger.Conway.Tx (AlonzoEraTx (..))
 import Cardano.Ledger.Crypto (Crypto (..))
-import Cardano.Ledger.Shelley.Delegation.Certificates (DCert)
 import Cardano.Ledger.Shelley.LedgerState (
   DPState (..),
   DState (..),
@@ -166,7 +165,7 @@ instance
   , Environment (EraRule "DELEGS" era) ~ DelegsEnv era
   , State (EraRule "DELEGS" era) ~ DPState (EraCrypto era)
   , Signal (EraRule "UTXOW" era) ~ Tx era
-  , Signal (EraRule "DELEGS" era) ~ Seq (DCert (EraCrypto era))
+  , Signal (EraRule "DELEGS" era) ~ Seq (DCert era)
   , Signal (EraRule "TALLY" era) ~ Seq (GovernanceProcedure era)
   , Environment (EraRule "TALLY" era) ~ TallyEnv era
   , State (EraRule "TALLY" era) ~ ConwayTallyState era
@@ -218,7 +217,7 @@ ledgerTransition ::
   , Embed (EraRule "DELEGS" era) (someLEDGER era)
   , Environment (EraRule "DELEGS" era) ~ DelegsEnv era
   , State (EraRule "DELEGS" era) ~ DPState (EraCrypto era)
-  , Signal (EraRule "DELEGS" era) ~ Seq (DCert (EraCrypto era))
+  , Signal (EraRule "DELEGS" era) ~ Seq (DCert era)
   , Environment (EraRule "UTXOW" era) ~ UtxoEnv era
   , State (EraRule "UTXOW" era) ~ UTxOState era
   , Signal (EraRule "UTXOW" era) ~ Tx era
@@ -240,7 +239,7 @@ ledgerTransition = do
           TRC
             ( DelegsEnv slot txIx pp tx account
             , dpstate
-            , StrictSeq.fromStrict $ txBody ^. certsTxBodyG
+            , StrictSeq.fromStrict $ txBody ^. certsTxBodyL
             )
       else pure dpstate
 
@@ -299,7 +298,7 @@ instance
   , Embed (EraRule "DELPL" era) (ShelleyDELEGS era)
   , State (EraRule "DELPL" era) ~ DPState (EraCrypto era)
   , Environment (EraRule "DELPL" era) ~ DelplEnv era
-  , Signal (EraRule "DELPL" era) ~ DCert (EraCrypto era)
+  , Signal (EraRule "DELPL" era) ~ DCert era
   , PredicateFailure (EraRule "DELEGS" era) ~ ShelleyDelegsPredFailure era
   , Event (EraRule "DELEGS" era) ~ ShelleyDelegsEvent era
   ) =>
@@ -319,7 +318,7 @@ instance
   , Environment (EraRule "DELEGS" era) ~ DelegsEnv era
   , Environment (EraRule "TALLY" era) ~ TallyEnv era
   , Signal (EraRule "UTXOW" era) ~ Tx era
-  , Signal (EraRule "DELEGS" era) ~ Seq (DCert (EraCrypto era))
+  , Signal (EraRule "DELEGS" era) ~ Seq (DCert era)
   , Signal (EraRule "TALLY" era) ~ Seq (GovernanceProcedure era)
   , State (EraRule "UTXOW" era) ~ UTxOState era
   , State (EraRule "DELEGS" era) ~ DPState (EraCrypto era)

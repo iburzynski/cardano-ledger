@@ -552,7 +552,7 @@ chooseGood bad n xs = do
 -- ==================================================
 -- Generating Certificates, May add to the Model
 
-genDCert :: forall era. Reflect era => SlotNo -> GenRS era (DCert (EraCrypto era))
+genDCert :: forall era. Reflect era => SlotNo -> GenRS era (DCert era)
 genDCert slot = do
   res <-
     elementsT
@@ -587,7 +587,7 @@ genDCert slot = do
       delta <- lift $ choose (nextEpoch, maxEpoch)
       return . EpochNo $ (curEpoch + delta)
 
-genDCerts :: forall era. Reflect era => SlotNo -> GenRS era [DCert (EraCrypto era)]
+genDCerts :: forall era. Reflect era => SlotNo -> GenRS era [DCert era]
 genDCerts slot = do
   let genUniqueScript (!dcs, !ss, !regCreds) _ = do
         honest <- gets gsStableDelegators
@@ -650,7 +650,7 @@ genDCerts slot = do
   n <- lift $ choose (0, maxcert)
   reward <- gets (mRewards . gsModel)
   let initSets ::
-        ( [DCert (EraCrypto era)]
+        ( [DCert era]
         , Set (ScriptHash (EraCrypto era), Maybe (KeyHash 'StakePool (EraCrypto era)))
         , Map (Credential 'Staking (EraCrypto era)) Coin
         )

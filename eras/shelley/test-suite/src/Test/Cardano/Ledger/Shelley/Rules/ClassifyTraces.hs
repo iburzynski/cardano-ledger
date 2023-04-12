@@ -253,7 +253,7 @@ certsByTx ::
   , ProtVerAtMost era 8
   ) =>
   [Tx era] ->
-  [[DCert (EraCrypto era)]]
+  [[DCert era]]
 certsByTx txs = toList . view certsTxBodyL . view bodyTxL <$> txs
 
 ratioInt :: Int -> Int -> Double

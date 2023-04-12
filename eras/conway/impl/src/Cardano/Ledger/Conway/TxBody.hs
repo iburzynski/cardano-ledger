@@ -75,8 +75,9 @@ import Cardano.Ledger.Binary.Coders (
 import Cardano.Ledger.Coin (Coin (..))
 import Cardano.Ledger.Conway.Core (
   ConwayEraTxBody (..),
+  ShelleyEraDCert,
  )
-import Cardano.Ledger.Conway.Delegation.Certificates (ConwayDCert, transDCert)
+import Cardano.Ledger.Conway.Delegation.Certificates (ConwayDCert)
 import Cardano.Ledger.Conway.Era (ConwayEra)
 import Cardano.Ledger.Conway.PParams ()
 import Cardano.Ledger.Conway.Rules.Tally (GovernanceProcedure)
@@ -125,7 +126,7 @@ data ConwayTxBodyRaw era = ConwayTxBodyRaw
   , ctbrOutputs :: !(StrictSeq (Sized (TxOut era)))
   , ctbrCollateralReturn :: !(StrictMaybe (Sized (TxOut era)))
   , ctbrTotalCollateral :: !(StrictMaybe Coin)
-  , ctbrCerts :: !(StrictSeq (ConwayDCert (EraCrypto era)))
+  , ctbrCerts :: !(StrictSeq (ConwayDCert era))
   , ctbrWithdrawals :: !(Withdrawals (EraCrypto era))
   , ctbrTxfee :: !Coin
   , ctbrVldt :: !ValidityInterval
@@ -289,7 +290,15 @@ instance Crypto c => EraTxBody (ConwayEra c) where
   withdrawalsTxBodyL = lensMemoRawType ctbrWithdrawals (\txb x -> txb {ctbrWithdrawals = x})
   {-# INLINE withdrawalsTxBodyL #-}
 
-instance Crypto c => ShelleyEraTxBody (ConwayEra c) where
+  certsTxBodyL = notSupportedInThisEraL
+  {-# INLINE certsTxBodyL #-}
+
+instance
+  ( Crypto c
+  , ShelleyEraDCert (ConwayEra c)
+  ) =>
+  ShelleyEraTxBody (ConwayEra c)
+  where
   {-# SPECIALIZE instance ShelleyEraTxBody (ConwayEra StandardCrypto) #-}
 
   ttlTxBodyL = notSupportedInThisEraL
@@ -299,11 +308,6 @@ instance Crypto c => ShelleyEraTxBody (ConwayEra c) where
   {-# INLINE updateTxBodyL #-}
 
   updateTxBodyG = to (const SNothing)
-
-  certsTxBodyL = notSupportedInThisEraL
-  {-# INLINE certsTxBodyL #-}
-
-  certsTxBodyG = getterMemoRawType (fmap transDCert . ctbrCerts)
 
 instance Crypto c => AllegraEraTxBody (ConwayEra c) where
   {-# SPECIALIZE instance AllegraEraTxBody (ConwayEra StandardCrypto) #-}
@@ -377,7 +381,7 @@ pattern ConwayTxBody ::
   StrictSeq (Sized (TxOut era)) ->
   StrictMaybe (Sized (TxOut era)) ->
   StrictMaybe Coin ->
-  StrictSeq (ConwayDCert (EraCrypto era)) ->
+  StrictSeq (ConwayDCert era) ->
   Withdrawals (EraCrypto era) ->
   Coin ->
   ValidityInterval ->

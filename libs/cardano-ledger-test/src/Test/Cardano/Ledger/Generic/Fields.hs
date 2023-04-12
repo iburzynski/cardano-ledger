@@ -116,7 +116,7 @@ data TxBodyField era
   | Outputs (StrictSeq (TxOut era))
   | CollateralReturn (StrictMaybe (TxOut era))
   | TotalCol (StrictMaybe Coin)
-  | Certs (StrictSeq (DCert (EraCrypto era)))
+  | Certs (StrictSeq (DCert era))
   | Withdrawals' (Withdrawals (EraCrypto era))
   | Txfee Coin
   | Vldt ValidityInterval
@@ -128,7 +128,7 @@ data TxBodyField era
   | AdHash (StrictMaybe (AuxiliaryDataHash (EraCrypto era)))
   | Txnetworkid (StrictMaybe Network)
   | GovernanceProcs (StrictSeq (GovernanceProcedure era))
-  | ConwayCerts (StrictSeq (ConwayDCert (EraCrypto era)))
+  | ConwayCerts (StrictSeq (ConwayDCert era))
 
 pattern Inputs' :: [TxIn (EraCrypto era)] -> TxBodyField era -- Set
 
@@ -138,7 +138,7 @@ pattern RefInputs' :: [TxIn (EraCrypto era)] -> TxBodyField era -- Set
 
 pattern Outputs' :: [TxOut era] -> TxBodyField era -- StrictSeq
 
-pattern Certs' :: [DCert (EraCrypto era)] -> TxBodyField era -- StrictSeq
+pattern Certs' :: [DCert era] -> TxBodyField era -- StrictSeq
 
 pattern CollateralReturn' :: [TxOut era] -> TxBodyField era -- 0 or 1 element
 
@@ -470,7 +470,7 @@ pattern Update' x <-
   where
     Update' x = Update (toStrictMaybe x)
 
-certsview :: TxBodyField era -> Maybe [DCert (EraCrypto era)]
+certsview :: TxBodyField era -> Maybe [DCert era]
 certsview (Certs x) = Just (fromStrictSeq x)
 certsview _ = Nothing
 

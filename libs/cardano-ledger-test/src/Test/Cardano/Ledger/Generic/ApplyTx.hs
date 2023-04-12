@@ -162,7 +162,7 @@ applyWithdrawals :: Proof era -> Model era -> RewardAcnt (EraCrypto era) -> Coin
 applyWithdrawals _proof model (RewardAcnt _network cred) coin =
   model {mRewards = Map.adjust (\c -> c <-> coin) cred (mRewards model)}
 
-applyCert :: EraPParams era => Model era -> DCert (EraCrypto era) -> Model era
+applyCert :: EraPParams era => Model era -> DCert era -> Model era
 applyCert model dcert = case dcert of
   (DCertDeleg (RegKey x)) ->
     model

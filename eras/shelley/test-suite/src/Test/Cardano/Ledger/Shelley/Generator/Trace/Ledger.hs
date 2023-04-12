@@ -79,7 +79,7 @@ instance
   , Embed (EraRule "DELPL" era) (CERTS era)
   , Environment (EraRule "DELPL" era) ~ DelplEnv era
   , State (EraRule "DELPL" era) ~ DPState (EraCrypto era)
-  , Signal (EraRule "DELPL" era) ~ DCert (EraCrypto era)
+  , Signal (EraRule "DELPL" era) ~ DCert era
   , PredicateFailure (EraRule "DELPL" era) ~ ShelleyDelplPredFailure era
   , Embed (EraRule "DELEGS" era) (ShelleyLEDGER era)
   , Embed (EraRule "UTXOW" era) (ShelleyLEDGER era)
@@ -88,7 +88,7 @@ instance
   , Signal (EraRule "UTXOW" era) ~ Tx era
   , Environment (EraRule "DELEGS" era) ~ DelegsEnv era
   , State (EraRule "DELEGS" era) ~ DPState (EraCrypto era)
-  , Signal (EraRule "DELEGS" era) ~ Seq (DCert (EraCrypto era))
+  , Signal (EraRule "DELEGS" era) ~ Seq (DCert era)
   , ProtVerAtMost era 8
   ) =>
   TQC.HasTrace (ShelleyLEDGER era) (GenEnv era)
@@ -114,7 +114,7 @@ instance
   , Embed (EraRule "DELPL" era) (CERTS era)
   , Environment (EraRule "DELPL" era) ~ DelplEnv era
   , State (EraRule "DELPL" era) ~ DPState (EraCrypto era)
-  , Signal (EraRule "DELPL" era) ~ DCert (EraCrypto era)
+  , Signal (EraRule "DELPL" era) ~ DCert era
   , PredicateFailure (EraRule "DELPL" era) ~ ShelleyDelplPredFailure era
   , Embed (EraRule "DELEG" era) (ShelleyDELPL era)
   , Embed (EraRule "LEDGER" era) (ShelleyLEDGERS era)

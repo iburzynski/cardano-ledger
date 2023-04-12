@@ -1,10 +1,11 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE LambdaCase #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
+{-# LANGUAGE TypeFamilies #-}
 
 module Cardano.Ledger.Conway.Delegation.Certificates (
   ConwayDCert (..),
-  transDCert,
   ConwayDelegCert (..),
   Delegatee (..),
 )
@@ -15,9 +16,11 @@ import Cardano.Ledger.Binary (
   DecCBOR (..),
   EncCBOR (..),
   EncCBORGroup (..),
+  FromCBOR (..),
   decCBORGroup,
   decodeRecordSum,
-  encodeListLen, listLenInt,
+  encodeListLen,
+  listLenInt, ToCBOR (..),
  )
 import Cardano.Ledger.Binary.Coders (
   Decode (..),
@@ -28,18 +31,37 @@ import Cardano.Ledger.Binary.Coders (
   (<!),
  )
 import Cardano.Ledger.Coin (Coin)
+import Cardano.Ledger.Core (Era (..), EraDCert)
 import Cardano.Ledger.Credential (Credential, StakeCredential)
 import Cardano.Ledger.Crypto
 import Cardano.Ledger.Keys (KeyHash, KeyRole (..))
-import Cardano.Ledger.Shelley.Delegation.Certificates (
+import Cardano.Ledger.Shelley.Delegation (
   ConstitutionalDelegCert (..),
-  PoolCert (..),
+  PoolCert (..), EraDCert (..), ShelleyEraDCert (..),
  )
 import Cardano.Ledger.Slot (EpochNo (..))
 import Control.DeepSeq (NFData)
 import Data.Word (Word8)
 import GHC.Generics (Generic)
 import NoThunks.Class (NoThunks)
+import Cardano.Ledger.Conway.Era (ConwayEra)
+
+instance Crypto c => EraDCert (ConwayEra c) where
+  type DCert (ConwayEra c) = ConwayDCert (ConwayEra c)
+  mkDCertDeleg = undefined
+  getDCertDeleg = undefined
+  mkDCertPool = undefined
+  getDCertPool = undefined
+  mkDCertGenesis = undefined
+  getDCertGenesis = undefined
+
+instance Crypto c => ShelleyEraDCert (ConwayEra c) where
+  mkDCertMir = undefined
+  getDCertMir = undefined
+
+class ShelleyEraDCert era => ConwayEraDCert era where
+
+instance Crypto c => ConwayEraDCert (ConwayEra c)
 
 -- | First type argument is the deposit
 data Delegatee c
@@ -89,17 +111,20 @@ instance NFData (ConwayDelegCert c)
 
 instance NoThunks (ConwayDelegCert c)
 
-data ConwayDCert c
-  = ConwayDCertDeleg !(ConwayDelegCert c)
-  | ConwayDCertPool !(PoolCert c)
-  | ConwayDCertConstitutional !(ConstitutionalDelegCert c)
+data ConwayDCert era
+  = ConwayDCertDeleg !(ConwayDelegCert (EraCrypto era))
+  | ConwayDCertPool !(PoolCert (EraCrypto era))
+  | ConwayDCertConstitutional !(ConstitutionalDelegCert (EraCrypto era))
   deriving (Show, Generic, Eq)
 
 instance NFData (ConwayDCert c)
 
 instance NoThunks (ConwayDCert c)
 
-instance Crypto c => DecCBOR (ConwayDCert c) where
+instance Era era => FromCBOR (ConwayDCert era) where
+  fromCBOR = undefined
+
+instance Era era => DecCBOR (ConwayDCert era) where
   decCBOR = decodeRecordSum "ConwayDCert" $
     \case
       3 -> do
@@ -129,7 +154,10 @@ instance Crypto c => DecCBOR (ConwayDCert c) where
         pure (3, ConwayDCertDeleg $ ConwayUnDeleg cred deposit)
       k -> invalidKey k
 
-instance Crypto c => EncCBOR (ConwayDCert c) where
+instance Era era => ToCBOR (ConwayDCert era) where
+  toCBOR = undefined
+
+instance Era era => EncCBOR (ConwayDCert era) where
   encCBOR = \case
     -- DCertDeleg
     ConwayDCertPool (RegPool poolParams) ->
@@ -164,8 +192,3 @@ instance Crypto c => EncCBOR (ConwayDCert c) where
         <> encCBOR (8 :: Word8)
         <> encCBOR cred
         <> encCBOR deposit
-
-transDCert :: ConwayDCert c -> DCert c
-transDCert (ConwayDCertDeleg dc) = DCertDeleg dc
-transDCert (ConwayDCertPool pc) = DCertPool pc
-transDCert (ConwayDCertConstitutional gdc) = DCertGenesis gdc

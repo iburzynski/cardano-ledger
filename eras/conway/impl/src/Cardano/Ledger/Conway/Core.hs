@@ -25,4 +25,4 @@ import Lens.Micro (Lens')
 
 class BabbageEraTxBody era => ConwayEraTxBody era where
   govProcsTxBodyL :: Lens' (TxBody era) (StrictSeq (GovernanceProcedure era))
-  conwayCertsTxBodyL :: Lens' (TxBody era) (StrictSeq (ConwayDCert (EraCrypto era)))
+  conwayCertsTxBodyL :: Lens' (TxBody era) (StrictSeq (ConwayDCert era))

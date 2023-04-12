@@ -113,7 +113,7 @@ genDCert ::
   AccountState ->
   DPState (EraCrypto era) ->
   SlotNo ->
-  Gen (Maybe (DCert (EraCrypto era), CertCred era))
+  Gen (Maybe (DCert era, CertCred era))
 genDCert
   c@( Constants
         { frequencyRegKeyCert
@@ -169,7 +169,7 @@ genRegKeyCert ::
   KeyPairs (EraCrypto era) ->
   [(Script era, Script era)] ->
   DState (EraCrypto era) ->
-  Gen (Maybe (DCert (EraCrypto era), CertCred era))
+  Gen (Maybe (DCert era, CertCred era))
 genRegKeyCert
   Constants {frequencyKeyCredReg, frequencyScriptCredReg}
   keys
@@ -216,7 +216,7 @@ genDeRegKeyCert ::
   KeyPairs (EraCrypto era) ->
   [(Script era, Script era)] ->
   DState (EraCrypto era) ->
-  Gen (Maybe (DCert (EraCrypto era), CertCred era))
+  Gen (Maybe (DCert era, CertCred era))
 genDeRegKeyCert Constants {frequencyKeyCredDeReg, frequencyScriptCredDeReg} keys scripts dState =
   QC.frequency
     [
@@ -274,7 +274,7 @@ genDelegation ::
   KeyPairs (EraCrypto era) ->
   [(Script era, Script era)] ->
   DPState (EraCrypto era) ->
-  Gen (Maybe (DCert (EraCrypto era), CertCred era))
+  Gen (Maybe (DCert era, CertCred era))
 genDelegation
   Constants {frequencyKeyCredDelegation, frequencyScriptCredDelegation}
   keys
@@ -327,7 +327,7 @@ genGenesisDelegation ::
   -- | All potential genesis delegate keys
   [AllIssuerKeys (EraCrypto era) 'GenesisDelegate] ->
   DPState (EraCrypto era) ->
-  Gen (Maybe (DCert (EraCrypto era), CertCred era))
+  Gen (Maybe (DCert era, CertCred era))
 genGenesisDelegation coreNodes delegateKeys dpState =
   if null genesisDelegators || null availableDelegatees
     then pure Nothing
@@ -406,7 +406,7 @@ genRegPool ::
   [AllIssuerKeys (EraCrypto era) 'StakePool] ->
   KeyPairs (EraCrypto era) ->
   Coin ->
-  Gen (Maybe (DCert (EraCrypto era), CertCred era))
+  Gen (Maybe (DCert era, CertCred era))
 genRegPool poolKeys keyPairs minPoolCost = do
   (pps, poolKey) <- genStakePool poolKeys keyPairs minPoolCost
   pure $ Just (DCertPool (RegPool pps), PoolCred poolKey)
@@ -424,7 +424,7 @@ genRetirePool ::
   [AllIssuerKeys (EraCrypto era) 'StakePool] ->
   PState (EraCrypto era) ->
   SlotNo ->
-  Gen (Maybe (DCert (EraCrypto era), CertCred era))
+  Gen (Maybe (DCert era, CertCred era))
 genRetirePool _pp poolKeys pState slot =
   if (null retireable)
     then pure Nothing
@@ -463,7 +463,7 @@ genInstantaneousRewardsAccounts ::
   PParams era ->
   AccountState ->
   DState (EraCrypto era) ->
-  Gen (Maybe (DCert (EraCrypto era), CertCred era))
+  Gen (Maybe (DCert era, CertCred era))
 genInstantaneousRewardsAccounts s genesisDelegatesByHash pparams accountState delegSt = do
   let (GenDelegs genDelegs_) = dsGenDelegs delegSt
       lookupGenDelegate' gk =
@@ -513,7 +513,7 @@ genInstantaneousRewardsTransfer ::
   PParams era ->
   AccountState ->
   DState (EraCrypto era) ->
-  Gen (Maybe (DCert (EraCrypto era), CertCred era))
+  Gen (Maybe (DCert era, CertCred era))
 genInstantaneousRewardsTransfer s genesisDelegatesByHash pparams accountState delegSt = do
   let (GenDelegs genDelegs_) = dsGenDelegs delegSt
       lookupGenDelegate' gk =
@@ -550,7 +550,7 @@ genInstantaneousRewards ::
   PParams era ->
   AccountState ->
   DState (EraCrypto era) ->
-  Gen (Maybe (DCert (EraCrypto era), CertCred era))
+  Gen (Maybe (DCert era, CertCred era))
 genInstantaneousRewards slot genesisDelegatesByHash pparams accountState delegSt =
   if HardForks.allowMIRTransfer (pparams ^. ppProtocolVersionL)
     then

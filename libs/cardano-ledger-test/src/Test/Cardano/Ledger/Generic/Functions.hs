@@ -122,7 +122,7 @@ protocolVersion (Shelley _) = ProtVer (natVersion @2) 0
 depositsAndRefunds ::
   EraPParams era =>
   PParams era ->
-  [DCert (EraCrypto era)] ->
+  [DCert era] ->
   Map (Credential 'Staking (EraCrypto era)) Coin ->
   Coin
 depositsAndRefunds pp certificates keydeposits = List.foldl' accum (Coin 0) certificates
@@ -333,7 +333,7 @@ alwaysFalse p@(Allegra _) _ n = never n p
 alwaysFalse p@(Shelley _) _ n = never n p
 {-# NOINLINE alwaysFalse #-}
 
-certs :: (ShelleyEraTxBody era, EraTx era, ProtVerAtMost era 8) => Proof era -> Tx era -> [DCert (EraCrypto era)]
+certs :: (ShelleyEraTxBody era, EraTx era, ProtVerAtMost era 8) => Proof era -> Tx era -> [DCert era]
 certs _ tx = Fold.toList $ tx ^. bodyTxL . certsTxBodyL
 
 -- | Create an old style RewardUpdate to be used in tests, in any Era.
